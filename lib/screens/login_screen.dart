@@ -14,7 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   void _submit() async {
-    final errorMessage = await Provider.of<AuthProvider>(context, listen: false).login(
+    final errorMessage =
+        await Provider.of<AuthProvider>(context, listen: false).login(
       _emailController.text,
       _passwordController.text,
     );
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(errorMessage)),
       );
     } else {
-      Navigator.of(context).pushReplacementNamed('/dashboard');
+      Navigator.of(context).pushReplacementNamed('/home');
     }
   }
 
