@@ -8,8 +8,8 @@ class AuthProvider with ChangeNotifier {
 
   String get token => _token;
 
-  Future<void> login(String email, String password) async {
-    final url = Uri.parse('http://192.168.1.2:8000/api/login');
+  Future<String?> login(String email, String password) async {
+    final url = Uri.parse('http://10.0.2.2:8000/api/login');
     final response = await http.post(url, body: {
       'email': email,
       'password': password,
@@ -17,26 +17,43 @@ class AuthProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      _token = data['token'];
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', _token);
-      notifyListeners();
+      if (data.containsKey('access_token')) {
+        _token = data['access_token'];
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', _token);
+        notifyListeners();
+        return null;
+      } else {
+        return 'Access token tidak ditemukan dalam respons.';
+      }
     } else {
-      throw Exception('Login Failed');
+      final data = json.decode(response.body);
+      print('Response data: $data');
+      return data['message'] ?? 'Login gagal, silakan coba lagi.';
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     _token = '';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     notifyListeners();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Anda telah logout')),
+    );
+
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   Future<void> tryAutoLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('token')) return;
-    _token = prefs.getString('token')!;
-    notifyListeners();
+
+    final token = prefs.getString('token');
+    if (token != null) {
+      _token = token;
+      notifyListeners();
+    }
   }
 }

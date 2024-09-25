@@ -5,10 +5,12 @@ import './screens/login_screen.dart';
 import './screens/dashboard_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -17,10 +19,10 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
-          home: auth.token.isEmpty ? LoginScreen() : DashboardScreen(),
+          home: auth.token.isEmpty ? const LoginScreen() : const DashboardScreen(),
           routes: {
-            '/login': (ctx) => LoginScreen(),
-            '/dashboard': (ctx) => DashboardScreen(),
+            '/login': (ctx) => const LoginScreen(),
+            '/dashboard': (ctx) => const DashboardScreen(),
           },
         ),
       ),

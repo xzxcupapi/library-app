@@ -3,22 +3,24 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 
 class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: const Text('Dashboard'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).logout();
+              Provider.of<AuthProvider>(context, listen: false).logout(context);
               Navigator.of(context).pushReplacementNamed('/login');
             },
           ),
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Text('Welcome to Dashboard!'),
       ),
     );
