@@ -8,6 +8,11 @@ class AuthProvider with ChangeNotifier {
 
   String get token => _token;
 
+  void setToken(String newToken) {
+    _token = newToken;
+    notifyListeners();
+  }
+
   Future<String?> login(String email, String password) async {
     final url = Uri.parse('http://10.0.2.2:8000/api/login');
     final response = await http.post(url, body: {

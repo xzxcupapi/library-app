@@ -10,15 +10,6 @@ class BooksScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Books'),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.logout),
-        //     onPressed: () {
-        //       Provider.of<AuthProvider>(context, listen: false).logout(context);
-        //       Navigator.of(context).pushReplacementNamed('/login');
-        //     },
-        //   ),
-        // ],
       ),
       body: const Center(
         child: Text('Welcome to Books Screen!'),
