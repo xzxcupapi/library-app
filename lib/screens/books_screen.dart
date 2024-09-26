@@ -22,7 +22,8 @@ class _BooksScreenState extends State<BooksScreen> {
     });
   }
 
-  void _sort<T>(Comparable<T> Function(dynamic book) getField, int columnIndex, bool ascending) {
+  void _sort<T>(Comparable<T> Function(dynamic book) getField, int columnIndex,
+      bool ascending) {
     Provider.of<BookProvider>(context, listen: false).sortBooks((a, b) {
       if (!ascending) {
         final temp = a;
@@ -80,7 +81,8 @@ class _BooksScreenState extends State<BooksScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => Provider.of<BookProvider>(context, listen: false).loadBooks(),
+            onPressed: () =>
+                Provider.of<BookProvider>(context, listen: false).loadBooks(),
           ),
         ],
       ),
@@ -106,19 +108,24 @@ class _BooksScreenState extends State<BooksScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Text('Daftar Buku', style: Theme.of(context).textTheme.titleLarge),
+                      Text('Daftar Buku',
+                          style: Theme.of(context).textTheme.titleLarge),
                       SizedBox(height: 10),
                       DataTable(
                         columns: [
                           DataColumn(
                             label: const Text('Judul'),
-                            onSort: (columnIndex, ascending) =>
-                                _sort<String>((book) => book['judul'], columnIndex, ascending),
+                            onSort: (columnIndex, ascending) => _sort<String>(
+                                (book) => book['judul'],
+                                columnIndex,
+                                ascending),
                           ),
                           DataColumn(
                             label: const Text('Status'),
-                            onSort: (columnIndex, ascending) =>
-                                _sort<String>((book) => book['status'], columnIndex, ascending),
+                            onSort: (columnIndex, ascending) => _sort<String>(
+                                (book) => book['status'],
+                                columnIndex,
+                                ascending),
                           ),
                         ],
                         rows: bookProvider.books.map<DataRow>((book) {
