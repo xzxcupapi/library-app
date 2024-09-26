@@ -40,6 +40,47 @@ class _BooksScreenState extends State<BooksScreen> {
     });
   }
 
+  void _showBookDetails(String title, String pengarang, String penerbit, String tahun_terbit, String status) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Detail Buku"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Judul:\n $title"),
+              SizedBox(height: 2),
+              Text("Pengarang:\n $pengarang"),
+              SizedBox(height: 2),
+              Text('Penerbit: \n $penerbit'),
+              SizedBox(height: 2),
+              Text('Tahun Terbit: \n $tahun_terbit'),
+              SizedBox(height: 2),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Status: "),
+                  SizedBox(height: 2),
+                  _buildStatusBadge(status),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Tutup"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildStatusBadge(String status) {
     Color backgroundColor;
     Color textColor = Colors.white;
@@ -105,7 +146,7 @@ class _BooksScreenState extends State<BooksScreen> {
               child: Card(
                 margin: const EdgeInsets.all(10.0),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       Text('Daftar Buku',
@@ -131,7 +172,17 @@ class _BooksScreenState extends State<BooksScreen> {
                         rows: bookProvider.books.map<DataRow>((book) {
                           return DataRow(
                             cells: [
-                              DataCell(Text(book['judul'] ?? '')),
+                              DataCell(
+                                Text(book['judul'] ?? ''),
+                                onTap: () {
+                                  _showBookDetails(
+                                      book['judul'] ?? '',
+                                      book['pengarang'] ?? '',
+                                      book['penerbit'] ?? '',
+                                      book['tahun_terbit'] ?? '',
+                                      book['status'] ?? '');
+                                },
+                              ),
                               DataCell(_buildStatusBadge(book['status'] ?? '')),
                             ],
                           );
