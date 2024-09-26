@@ -17,26 +17,38 @@ class BottomMenu extends StatelessWidget {
         ),
       ),
       child: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
+            tooltip: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Books',
+            label: 'Buku',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.remove_red_eye),
+            label: 'Kunjungan',
+            tooltip: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Setting',
+            label: 'Pengaturan',
+            tooltip: '',
           ),
         ],
         currentIndex: selectedIndex,
         onTap: onItemTapped,
         selectedItemColor: Colors.black87,
         unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Colors.white,
+        selectedLabelStyle: TextStyle(fontSize: 12),
+        unselectedLabelStyle: TextStyle(fontSize: 10),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/bottom_menu.dart';
+import 'kunjungan_screen.dart';
 import 'dashboard_screen.dart';
 import 'books_screen.dart';
 import 'setting_screen.dart';
@@ -16,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const DashboardScreen(),
     const BooksScreen(),
+    const KunjunganScreen(),
     const SettingScreen(),
   ];
 
