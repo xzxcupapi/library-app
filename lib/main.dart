@@ -7,6 +7,7 @@ import './screens/login_screen.dart';
 import './screens/dashboard_screen.dart';
 import './screens/home_screen.dart';
 import './screens/books_screen.dart';
+import './screens/camera_screen.dart';
 import './screens/kunjungan_screen.dart';
 import './screens/setting_screen.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
             '/home': (ctx) => const HomeScreen(),
             '/dashboard': (ctx) => const DashboardScreen(),
             '/books': (ctx) => const BooksScreen(),
+            '/camera': (ctx) => const CameraScreen(),
             '/kunjungan': (ctx) => const KunjunganScreen(),
             '/settings': (ctx) => const SettingScreen(),
           },

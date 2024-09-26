@@ -4,6 +4,7 @@ import 'kunjungan_screen.dart';
 import 'dashboard_screen.dart';
 import 'books_screen.dart';
 import 'setting_screen.dart';
+import 'camera_screen.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,12 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const DashboardScreen(),
     const BooksScreen(),
+    const CameraScreen(),
     const KunjunganScreen(),
     const SettingScreen(),
   ];
 
   void _onItemTapped(int index) {
-    print('Tapped index: $index');
     setState(() {
       _selectedIndex = index;
     });
@@ -30,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('Current page: $_selectedIndex');
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomMenu(
