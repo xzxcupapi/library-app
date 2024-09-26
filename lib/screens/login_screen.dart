@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,25 +14,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  final Color customBlack = Color(0xFF3C3D37);
+
   void _submit() async {
     // Validasi email dan password
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      Alert(
-        context: context,
-        type: AlertType.error,
-        title: "Error",
-        desc: "Email dan Password tidak boleh kosong.",
-        buttons: [
-          DialogButton(
-            child: const Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            width: 120,
-          )
-        ],
-      ).show();
+      _showSnackbar("Email dan Password tidak boleh kosong.", true);
       return;
     }
 
@@ -52,137 +38,100 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (errorMessage != null) {
-      Alert(
-        context: context,
-        type: AlertType.error,
-        title: "Error",
-        desc: errorMessage,
-        buttons: [
-          DialogButton(
-            child: const Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            width: 120,
-          )
-        ],
-      ).show();
+      _showSnackbar(errorMessage, true);
     } else {
-      Alert(
-        context: context,
-        type: AlertType.success,
-        title: "Success",
-        desc: "Login successful!",
-        buttons: [
-          DialogButton(
-            child: const Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () {
-                Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed('/home');
-            },
-            width: 120,
-          )
-        ],
-      ).show();
+      _showSnackbar("Login successful!", false);
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.of(context).pushReplacementNamed('/home');
+      });
     }
+  }
+
+  void _showSnackbar(String message, bool isError) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: isError ? Colors.red : Colors.green,
+      duration: const Duration(seconds: 2),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black26, Colors.black45],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.white,
         child: Center(
           child: SingleChildScrollView(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.book,
+                    size: 68,
+                    color: customBlack,
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.book,
-                      size: 32,
-                      color: Colors.grey,
+                  const SizedBox(height: 70),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(color: customBlack),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: customBlack),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: customBlack),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: customBlack),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: customBlack),
+                          borderRadius: BorderRadius.circular(10)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: customBlack),
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: customBlack,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 100, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: _isLoading
-                          ? CircularProgressIndicator(
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
                               color: Colors.white,
-                            )
-                          : const Text(
-                              'Login',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                              strokeWidth: 2,
                             ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
             ),
           ),

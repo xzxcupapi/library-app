@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/books_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:data_table_2/data_table_2.dart';
 
 class BooksScreen extends StatefulWidget {
@@ -12,7 +11,6 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
 
@@ -65,7 +63,7 @@ class _BooksScreenState extends State<BooksScreen> {
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         displayText,
@@ -78,7 +76,7 @@ class _BooksScreenState extends State<BooksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Books'),
+        title: const Text('Library Management'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -100,48 +98,39 @@ class _BooksScreenState extends State<BooksScreen> {
             return const Center(child: Text('No books available'));
           }
 
-          return Theme(
-            data: Theme.of(context).copyWith(
-              cardTheme: CardTheme(
-                elevation: 5,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-              ),
-            ),
-            child: Card(
-              margin: const EdgeInsets.all(10.0),
-              child: PaginatedDataTable2(
-                source: BookDataTableSource(bookProvider.books, _buildStatusBadge),
-                header: const Text('Book List'),
-                columns: [
-                  DataColumn2(
-                    label: const Text('Judul'),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<String>((book) => book['judul'], columnIndex, ascending),
-                  ),
-                  DataColumn2(
-                    label: const Text('Pengarang'),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<String>((book) => book['pengarang'], columnIndex, ascending),
-                  ),
-                  DataColumn2(
-                    label: const Text('Status'),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<String>((book) => book['status'], columnIndex, ascending),
-                  ),
-                ],
-                rowsPerPage: _rowsPerPage,
-                onRowsPerPageChanged: (value) {
-                  setState(() {
-                    _rowsPerPage = value!;
-                  });
-                },
-                sortColumnIndex: _sortColumnIndex,
-                sortAscending: _sortAscending,
-                empty: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    color: Colors.grey[200],
-                    child: const Text('No data'),
+          return SingleChildScrollView(
+            child: Center(
+              child: Card(
+                margin: const EdgeInsets.all(10.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Text('Daftar Buku', style: Theme.of(context).textTheme.titleLarge),
+                      SizedBox(height: 10),
+                      DataTable(
+                        columns: [
+                          DataColumn(
+                            label: const Text('Judul'),
+                            onSort: (columnIndex, ascending) =>
+                                _sort<String>((book) => book['judul'], columnIndex, ascending),
+                          ),
+                          DataColumn(
+                            label: const Text('Status'),
+                            onSort: (columnIndex, ascending) =>
+                                _sort<String>((book) => book['status'], columnIndex, ascending),
+                          ),
+                        ],
+                        rows: bookProvider.books.map<DataRow>((book) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(book['judul'] ?? '')),
+                              DataCell(_buildStatusBadge(book['status'] ?? '')),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -151,34 +140,4 @@ class _BooksScreenState extends State<BooksScreen> {
       ),
     );
   }
-}
-
-class BookDataTableSource extends DataTableSource {
-  final List<dynamic> _books;
-  final Widget Function(String) _buildStatusBadge;
-
-  BookDataTableSource(this._books, this._buildStatusBadge);
-
-  @override
-  DataRow? getRow(int index) {
-    if (index >= _books.length) return null;
-    final book = _books[index];
-    return DataRow.byIndex(
-      index: index,
-      cells: [
-        DataCell(Text(book['judul'] ?? '')),
-        DataCell(Text(book['pengarang'] ?? '')),
-        DataCell(_buildStatusBadge(book['status'] ?? '')),
-      ],
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => _books.length;
-
-  @override
-  int get selectedRowCount => 0;
 }

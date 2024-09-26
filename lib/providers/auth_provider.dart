@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
+  static const String _apiUrl = 'https://codenebula.my.id/api';
   String _token = '';
 
   String get token => _token;
@@ -14,7 +15,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<String?> login(String email, String password) async {
-    final url = Uri.parse('https://codenebula.my.id/api/login');
+    final url = Uri.parse('$_apiUrl/login');
     final response = await http.post(url, body: {
       'email': email,
       'password': password,
@@ -38,17 +39,13 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> logout(BuildContext context) async {
+  Future<String> logout(BuildContext context) async {
     _token = '';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     notifyListeners();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Anda telah logout')),
-    );
-
-    Navigator.of(context).pushReplacementNamed('/login');
+    return 'Logout Berhasil';
   }
 
   Future<void> tryAutoLogin() async {
