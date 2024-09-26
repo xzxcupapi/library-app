@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   graphic: ^2.5.0
   jwt_decoder: ^2.0.1
+  data_table_2: ^2.5.15
 
 dev_dependencies:
   flutter_test:

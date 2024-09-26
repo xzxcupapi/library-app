@@ -14,7 +14,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<String?> login(String email, String password) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/login');
+    final url = Uri.parse('https://codenebula.my.id/api/login');
     final response = await http.post(url, body: {
       'email': email,
       'password': password,
