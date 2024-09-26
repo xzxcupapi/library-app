@@ -40,9 +40,12 @@ class SettingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             _buildGridItem(context, 'Dashboard', Icons.dashboard, '/dashboard'),
-            const SizedBox(height: 10),
+            const SizedBox(height: 2),
             _buildGridItem(context, 'Books', Icons.book, '/books'),
-            const SizedBox(height: 10),
+            const SizedBox(height: 2),
+            _buildGridItem(
+                context, 'Camera', Icons.camera_alt, '/camera'),
+            const SizedBox(height: 2),
             _buildGridItem(
                 context, 'Kunjungan', Icons.visibility, '/kunjungan'),
           ],
@@ -59,7 +62,7 @@ class SettingScreen extends StatelessWidget {
       },
       child: Card(
         elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 20),
+        margin: const EdgeInsets.symmetric(vertical: 15),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16.0),
