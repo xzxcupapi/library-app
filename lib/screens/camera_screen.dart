@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../services/books_service.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -31,14 +33,33 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
-    _controller = CameraController(
-      firstCamera,
-      ResolutionPreset.medium,
-    );
-    _initializeControllerFuture = _controller.initialize();
-    setState(() {});
+    try {
+      final cameras = await availableCameras();
+      if (cameras.isNotEmpty) {
+        final firstCamera = cameras.first;
+        _controller = CameraController(
+          firstCamera,
+          ResolutionPreset.medium,
+        );
+        _initializeControllerFuture = _controller.initialize();
+        setState(() {});
+      } else {
+        throw Exception('No cameras available');
+      }
+    } catch (e) {
+      print('Error initializing camera: $e');
+    }
+  }
+
+  Future<String> performOCR(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final textRecognizer = GoogleMlKit.vision.textRecognizer();
+    final RecognizedText recognizedText =
+        await textRecognizer.processImage(inputImage);
+
+    String text = recognizedText.text;
+    textRecognizer.close();
+    return text;
   }
 
   @override
@@ -84,10 +105,13 @@ class _CameraScreenState extends State<CameraScreen> {
           try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-            // Di sini Anda bisa menambahkan logika untuk memproses gambar dengan OCR
             print('Gambar diambil: ${image.path}');
+            String bookTitle = await performOCR(image.path);
+            print('Judul Buku: $bookTitle');
+            final response = await BookService.getBookByTitle(bookTitle);
+            print('Response dari API: $response');
           } catch (e) {
-            print(e);
+            print('Error taking picture: $e');
           }
         },
         child: Icon(Icons.camera),

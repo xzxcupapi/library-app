@@ -41,8 +41,10 @@ dependencies:
   jwt_decoder: ^2.0.1
   data_table_2: ^2.5.15
   rflutter_alert: ^2.0.7
-  camera: ^0.10.0
-  permission_handler: ^10.0.0
+  camera: ^0.11.0
+  permission_handler: ^11.3.1
+  google_ml_kit: ^0.18.1
+
 
 dev_dependencies:
   flutter_test:
