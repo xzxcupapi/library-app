@@ -3,7 +3,11 @@ import 'package:http/http.dart' as http;
 
 class BookService {
   final String apiUrl = "https://codenebula.my.id/api/buku/dashboard/all";
-  static const String apiOcr = 'https://your-api-url.com/api/books';
+  // static const String apiOcr =
+  //     'https://codenebula.my.id/api/buku/search/all?judul=';
+  static const String apiOcr =
+      'http://192.168.1.2:8000/api/buku/search/all?judul=';
+
 
   Future<List<dynamic>> fetchBooks() async {
     try {
@@ -28,13 +32,22 @@ class BookService {
     }
   }
 
-  static Future<Map<String, dynamic>> getBookByTitle(String title) async {
-    final response = await http.get(Uri.parse('$apiOcr?title=$title'));
+  static Future<Map<String, dynamic>> getBookByTitle(String judul) async {
+    final response = await http.get(Uri.parse('$apiOcr$judul'));
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final data = jsonDecode(response.body);
+
+      if (data['data'] != null && data['data'].isNotEmpty) {
+        return data;
+      } else {
+        throw 'Buku tidak ada';
+      }
     } else {
-      throw Exception('Gagal memuat data buku');
+      final Map<String, dynamic> errorResponse = jsonDecode(response.body);
+      String errorMessage =
+          errorResponse['message'] ?? 'Gagal memuat data buku';
+      throw (errorMessage);
     }
   }
 }

@@ -40,6 +40,7 @@ class _CameraScreenState extends State<CameraScreen> {
         _controller = CameraController(
           firstCamera,
           ResolutionPreset.medium,
+          enableAudio: false,
         );
         _initializeControllerFuture = _controller.initialize();
         setState(() {});
@@ -60,6 +61,76 @@ class _CameraScreenState extends State<CameraScreen> {
     String text = recognizedText.text;
     textRecognizer.close();
     return text;
+  }
+
+  Future<void> _searchBook(String imagePath) async {
+    String bookTitle = await performOCR(imagePath);
+    print('Judul Buku yang terdeteksi: $bookTitle');
+
+    try {
+      final response = await BookService.getBookByTitle(bookTitle);
+      if (response != null && response['data'] != null) {
+        List<dynamic> books = response['data'];
+        for (var book in books) {
+          print('Buku ditemukan:');
+          print('Judul: ${book['judul']}');
+          print('Pengarang: ${book['pengarang']}');
+          print('Tahun Terbit: ${book['tahun_terbit']}');
+          print('Status: ${book['status']}');
+        }
+        _showDialog('Hasil Pencarian', books);
+        print('Buku ditemukan');
+      } else {
+        _showDialog('Hasil Pencarian', ['Buku tidak ditemukan.']);
+      }
+    } catch (e) {
+      print('Hasil Pencarian: $e');
+      _showDialog('Hasil Pencarian', [e.toString()]);
+    }
+  }
+
+
+
+  void _showDialog(String title, List<dynamic> books) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Container(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                children: books.map<Widget>((book) {
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      title: Text(book['judul']),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Pengarang: ${book['pengarang']}'),
+                          Text('Tahun Terbit: ${book['tahun_terbit']}'),
+                          Text('Status: ${book['status']}'),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -94,7 +165,11 @@ class _CameraScreenState extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
+            return Column(
+              children: [
+                Expanded(child: CameraPreview(_controller)),
+              ],
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
@@ -106,10 +181,7 @@ class _CameraScreenState extends State<CameraScreen> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
             print('Gambar diambil: ${image.path}');
-            String bookTitle = await performOCR(image.path);
-            print('Judul Buku: $bookTitle');
-            final response = await BookService.getBookByTitle(bookTitle);
-            print('Response dari API: $response');
+            await _searchBook(image.path);
           } catch (e) {
             print('Error taking picture: $e');
           }
