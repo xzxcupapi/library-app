@@ -3,11 +3,8 @@ import 'package:http/http.dart' as http;
 
 class BookService {
   final String apiUrl = "https://codenebula.my.id/api/buku/dashboard/all";
-  // static const String apiOcr =
-  //     'https://codenebula.my.id/api/buku/search/all?judul=';
   static const String apiOcr =
-      'http://192.168.1.2:8000/api/buku/search/all?judul=';
-
+      'https://codenebula.my.id/api/buku/search/all?judul=';
 
   Future<List<dynamic>> fetchBooks() async {
     try {
