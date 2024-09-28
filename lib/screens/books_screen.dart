@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/books_provider.dart';
-import 'package:data_table_2/data_table_2.dart';
 
 class BooksScreen extends StatefulWidget {
-  const BooksScreen({Key? key}) : super(key: key);
+  const BooksScreen({super.key});
 
   @override
   _BooksScreenState createState() => _BooksScreenState();
@@ -40,7 +39,7 @@ class _BooksScreenState extends State<BooksScreen> {
     });
   }
 
-  void _showBookDetails(String title, String pengarang, String penerbit, String tahun_terbit, String status) {
+  void _showBookDetails(String title, String pengarang, String penerbit, String tahunTerbit, String status) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -56,7 +55,7 @@ class _BooksScreenState extends State<BooksScreen> {
               SizedBox(height: 2),
               Text('Penerbit: \n $penerbit'),
               SizedBox(height: 2),
-              Text('Tahun Terbit: \n $tahun_terbit'),
+              Text('Tahun Terbit: \n $tahunTerbit'),
               SizedBox(height: 2),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

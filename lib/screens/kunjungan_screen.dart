@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/kunjungan_provider.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KunjunganScreen extends StatefulWidget {
-  const KunjunganScreen({Key? key}) : super(key: key);
+  const KunjunganScreen({super.key});
 
   @override
   _KunjunganScreenState createState() => _KunjunganScreenState();

@@ -4,7 +4,7 @@ class BottomMenu extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemTapped;
 
-  BottomMenu({required this.selectedIndex, required this.onItemTapped});
+  const BottomMenu({super.key, required this.selectedIndex, required this.onItemTapped});
 
   @override
   Widget build(BuildContext context) {

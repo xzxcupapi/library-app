@@ -39,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
         final firstCamera = cameras.first;
         _controller = CameraController(
           firstCamera,
-          ResolutionPreset.medium,
+          ResolutionPreset.veryHigh,
           enableAudio: false,
         );
         _initializeControllerFuture = _controller.initialize();
@@ -54,10 +54,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<String> performOCR(String imagePath) async {
     final inputImage = InputImage.fromFilePath(imagePath);
-    final textRecognizer = GoogleMlKit.vision.textRecognizer();
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     final RecognizedText recognizedText =
         await textRecognizer.processImage(inputImage);
-
     String text = recognizedText.text;
     textRecognizer.close();
     return text;
@@ -69,8 +68,10 @@ class _CameraScreenState extends State<CameraScreen> {
 
     try {
       final response = await BookService.getBookByTitle(bookTitle);
+
       if (response != null && response['data'] != null) {
         List<dynamic> books = response['data'];
+
         for (var book in books) {
           print('Buku ditemukan:');
           print('Judul: ${book['judul']}');
@@ -78,18 +79,34 @@ class _CameraScreenState extends State<CameraScreen> {
           print('Tahun Terbit: ${book['tahun_terbit']}');
           print('Status: ${book['status']}');
         }
+
         _showDialog('Hasil Pencarian', books);
         print('Buku ditemukan');
       } else {
-        _showDialog('Hasil Pencarian', ['Buku tidak ditemukan.']);
+        _showDialog('Hasil Pencarian', 'Buku tidak ditemukan' as List);
+        print('Buku tidak ditemukan (response null)');
       }
     } catch (e) {
-      print('Hasil Pencarian: $e');
-      _showDialog('Hasil Pencarian', [e.toString()]);
+      print('ini debug: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Hasil Pencarian'),
+            content: Text('$e'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
-
-
 
   void _showDialog(String title, List<dynamic> books) {
     showDialog(
@@ -165,10 +182,14 @@ class _CameraScreenState extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Column(
-              children: [
-                Expanded(child: CameraPreview(_controller)),
-              ],
+            return Center(
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: Transform.rotate(
+                  angle: 90 * 3.14159 / 180,
+                  child: CameraPreview(_controller),
+                ),
+              ),
             );
           } else {
             return Center(child: CircularProgressIndicator());
