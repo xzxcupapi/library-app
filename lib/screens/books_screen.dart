@@ -39,7 +39,8 @@ class _BooksScreenState extends State<BooksScreen> {
     });
   }
 
-  void _showBookDetails(String title, String pengarang, String penerbit, String tahunTerbit, String status) {
+  void _showBookDetails(String title, String pengarang, String penerbit,
+      String tahunTerbit, String status) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -94,6 +95,10 @@ class _BooksScreenState extends State<BooksScreen> {
       case 'tersedia':
         backgroundColor = Colors.green[600]!;
         displayText = 'Tersedia';
+        break;
+      case 'hilang':
+        backgroundColor = Colors.red[600]!;
+        displayText = 'Hilang';
         break;
       default:
         backgroundColor = Colors.grey[600]!;

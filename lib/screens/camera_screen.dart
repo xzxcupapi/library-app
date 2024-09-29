@@ -182,11 +182,16 @@ class _CameraScreenState extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            double rotation = 0;
+            if (_controller.value.previewSize!.width >
+                _controller.value.previewSize!.height) {
+              rotation = 90 * 3.14159 / 180;
+            }
             return Center(
               child: AspectRatio(
                 aspectRatio: _controller.value.aspectRatio,
                 child: Transform.rotate(
-                  angle: 90 * 3.14159 / 180,
+                  angle: rotation,
                   child: CameraPreview(_controller),
                 ),
               ),
