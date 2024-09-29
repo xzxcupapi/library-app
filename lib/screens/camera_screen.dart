@@ -15,6 +15,7 @@ class _CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool _isCameraPermissionGranted = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -63,6 +64,10 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _searchBook(String imagePath) async {
+    setState(() {
+      _isLoading = true; // Mulai loading
+    });
+
     String bookTitle = await performOCR(imagePath);
     print('Judul Buku yang terdeteksi: $bookTitle');
 
@@ -105,6 +110,10 @@ class _CameraScreenState extends State<CameraScreen> {
           );
         },
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // Mengakhiri loading
+      });
     }
   }
 
@@ -214,6 +223,15 @@ class _CameraScreenState extends State<CameraScreen> {
         },
         child: Icon(Icons.camera),
       ),
+      bottomSheet: _isLoading
+          ? Container(
+              // color: Colors.black54,
+              height: 700,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : SizedBox.shrink(),
     );
   }
 }
